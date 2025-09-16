@@ -1,7 +1,9 @@
 package com.github.delduck.spring_product_api.controller;
 
+import com.github.delduck.spring_product_api.exceptions.RecursoNaoEncontratoException;
 import com.github.delduck.spring_product_api.model.Produto;
 import com.github.delduck.spring_product_api.service.ProdutoService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,10 +25,9 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> buscarProduto(@PathVariable Long id) {
-        return produtoService.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> buscarProduto(@PathVariable Long id) {
+        Produto produto = produtoService.buscarPorId(id);
+        return ResponseEntity.ok(produto);
     }
 
     @PostMapping
