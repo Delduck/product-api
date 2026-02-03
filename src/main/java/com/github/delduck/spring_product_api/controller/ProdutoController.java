@@ -1,7 +1,10 @@
 package com.github.delduck.spring_product_api.controller;
 
+import com.github.delduck.spring_product_api.dto.ProductRequestDTO;
+import com.github.delduck.spring_product_api.dto.ProductResponseDTO;
 import com.github.delduck.spring_product_api.model.Produto;
 import com.github.delduck.spring_product_api.service.ProdutoService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,19 +21,24 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public List<Produto> listarProdutos() {
+    public List<ProductResponseDTO> listarProdutos() {
         return produtoService.listarProdutos();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarProduto(@PathVariable Long id) {
-        Produto produto = produtoService.buscarPorId(id);
-        return ResponseEntity.ok(produto);
+        return ResponseEntity.ok(produtoService.buscarPorId(id));
     }
 
     @PostMapping
-    public Produto criarProduto(@RequestBody Produto produto) {
-        return produtoService.salvarProduto(produto);
+    public ResponseEntity<ProductResponseDTO> criarProduto(@Valid @RequestBody ProductRequestDTO produtoDTO) {
+        return ResponseEntity.ok(produtoService.salvarProduto(produtoDTO));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> atualizarProduto(@PathVariable Long id, @Valid @RequestBody ProductRequestDTO produtoDTO) {
+        ProductResponseDTO produtoAtualizado = produtoService.atualizarProduto(id, produtoDTO);
+        return ResponseEntity.ok(produtoAtualizado);
     }
 
     @DeleteMapping("/{id}")
